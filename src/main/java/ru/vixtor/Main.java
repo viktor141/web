@@ -60,6 +60,22 @@ public class Main {
             }
         });
 
+        server.addHandler(Method.POST, "/", new Handler(){
+            @Override
+            public void handle(Request request, BufferedOutputStream responseStream) throws IOException {
+
+                System.out.println("Params = " + request.getPostParams());
+
+                System.out.println("Value = " + request.getPostParam("value"));
+
+                byte[] content = (request.getPostParams().toString() +  "\r\n" + request.getPostParam("value")).getBytes();
+
+                responseStream.write(request.getResponse(content).getBytes());
+                responseStream.write(content);
+                responseStream.flush();
+            }
+        });
+
         handlersReg(server);
 
         server.listen(9999);
