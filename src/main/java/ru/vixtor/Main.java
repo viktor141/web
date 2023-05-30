@@ -1,7 +1,7 @@
 package ru.vixtor;
 
 import ru.vixtor.server.Handler;
-import ru.vixtor.server.Query;
+import ru.vixtor.server.Method;
 import ru.vixtor.server.Request;
 import ru.vixtor.server.Server;
 
@@ -20,7 +20,7 @@ public class Main {
         // код инициализации сервера (из вашего предыдущего ДЗ)
 
         // добавление хендлеров (обработчиков)
-        server.addHandler(Query.GET, "/classic.html", new Handler() {
+        server.addHandler(Method.GET, "/classic.html", new Handler() {
             public void handle(Request request, BufferedOutputStream responseStream) {
                 try {
                     String template = Files.readString(request.getFilePath());
@@ -39,12 +39,12 @@ public class Main {
             }
         });
 
-        server.addHandler(Query.GET, "/messages", new Handler() {
+        server.addHandler(Method.GET, "/messages", new Handler() {
             public void handle(Request request, BufferedOutputStream responseStream) {
                 // TODO: handlers code
             }
         });
-        server.addHandler(Query.POST, "/messages", new Handler() {
+        server.addHandler(Method.POST, "/messages", new Handler() {
             public void handle(Request request, BufferedOutputStream responseStream) {
                 // TODO: handlers code
             }
@@ -59,7 +59,7 @@ public class Main {
 
     private static void handlersReg(Server server){
         for (String path: validPaths){
-            server.addHandler(Query.GET, path, new Handler());
+            server.addHandler(Method.GET, path, new Handler());
         }
     }
 }

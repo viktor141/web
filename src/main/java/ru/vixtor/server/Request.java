@@ -13,7 +13,7 @@ public class Request {
 
     private String response;
 
-    public Request(Query query, String path){
+    public Request(Method method, String path){
         this.path = path;
         filePath = Path.of(".", "public", path);
     }

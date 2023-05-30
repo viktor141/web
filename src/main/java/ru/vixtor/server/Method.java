@@ -3,13 +3,13 @@ package ru.vixtor.server;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum Query {
+public enum Method {
     GET,
     POST;
 
     private Map<String, Handler> map;
 
-    Query(){
+    Method(){
         map = new HashMap<>();
     }
 
