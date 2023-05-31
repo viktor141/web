@@ -21,32 +21,42 @@ public class Main {
 
         // добавление хендлеров (обработчиков)
         server.addHandler(Method.GET, "/classic.html", new Handler() {
-            public void handle(Request request, BufferedOutputStream responseStream) {
-                try {
-                    String template = Files.readString(request.getFilePath());
-                    byte[] content = template.replace(
-                            "{time}",
-                            LocalDateTime.now().toString()
-                    ).getBytes();
+            public void handle(Request request, BufferedOutputStream responseStream) throws IOException {
+                String template = Files.readString(request.getFilePath());
+                byte[] content = template.replace(
+                        "{time}",
+                        LocalDateTime.now().toString()
+                ).getBytes();
 
-                    responseStream.write(request.getResponse(content).getBytes());
-                    responseStream.write(content);
-                    responseStream.flush();
+                responseStream.write(request.getResponse(content).getBytes());
+                responseStream.write(content);
+                responseStream.flush();
 
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
             }
         });
 
         server.addHandler(Method.GET, "/messages", new Handler() {
-            public void handle(Request request, BufferedOutputStream responseStream) {
-                // TODO: handlers code
+            public void handle(Request request, BufferedOutputStream out) throws IOException {
+                out.write((
+                        "HTTP/1.1 403 Forbidden\r\n" +
+                                "Content-Length: 0\r\n" +
+
+                                "Connection: close\r\n" +
+                                "\r\n"
+                ).getBytes());
+                out.flush();
             }
         });
         server.addHandler(Method.POST, "/messages", new Handler() {
-            public void handle(Request request, BufferedOutputStream responseStream) {
-                // TODO: handlers code
+            public void handle(Request request, BufferedOutputStream out) throws IOException {
+                out.write((
+                        "HTTP/1.1 401 Unauthorized\r\n" +
+                                "Content-Length: 0\r\n" +
+
+                                "Connection: close\r\n" +
+                                "\r\n"
+                ).getBytes());
+                out.flush();
             }
         });
 
@@ -57,8 +67,8 @@ public class Main {
     }
 
 
-    private static void handlersReg(Server server){
-        for (String path: validPaths){
+    private static void handlersReg(Server server) {
+        for (String path : validPaths) {
             server.addHandler(Method.GET, path, new Handler());
         }
     }
