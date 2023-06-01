@@ -12,20 +12,19 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class Request {
 
-    private final Method method;
-    private Path filePath;
+    protected Method method;
+    protected Path filePath;
     private String mimeType;
     private long length;
 
     private String response;
 
-    private final Map<String, String> params = new HashMap<>();
+    protected final Map<String, String> params = new HashMap<>();
 
-    private final Map<String, String> bodyParams = new HashMap<>();
+    protected final Map<String, String> bodyParams = new HashMap<>();
 
 
     public Request(Method method, String handled, String path, String body) {
@@ -48,6 +47,10 @@ public class Request {
                 bodyParams.put( (!bodyParams.containsKey(keyAndValue[0])) ? keyAndValue[0] : keyAndValue[0] + "*Duplicated", (keyAndValue.length > 1) ? keyAndValue[1] : null);
             }
         }
+    }
+
+    protected Request(){
+
     }
 
     public String getResponse() {

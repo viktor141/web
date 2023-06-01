@@ -1,16 +1,14 @@
 package ru.vixtor.server;
 
-import org.apache.hc.core5.net.URLEncodedUtils;
+import org.apache.commons.fileupload.FileUploadException;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,7 +59,7 @@ public class Server {
             }
 
             // читаем request line
-            final var requestLine = new String(Arrays.copyOf(buffer, requestLineEnd)).split(" ");
+            String[] requestLine = new String(Arrays.copyOf(buffer, requestLineEnd)).split(" ");
             if (requestLine.length != 3) {
                 badRequest(out);
                 return;
@@ -133,12 +131,21 @@ public class Server {
 
             Handler handler = method.getMap().get(toHandle);
 
-            Request request = new Request(method, toHandle, path, body);
+            Optional<String> contentType = extractHeader(headers, "Content-Type");
 
+            Request request;
+
+            if (contentType.isPresent() && contentType.get().startsWith("multipart/form-data")) {
+                request = new MultiPartRequest(method, toHandle, path, body);
+            } else {
+                request = new Request(method, toHandle, path, body);
+            }
             handler.handle(request, out);
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (FileUploadException e) {
+            throw new RuntimeException(e);
         }
     }
 
